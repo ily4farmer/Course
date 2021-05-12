@@ -5,7 +5,6 @@ import "./SideBar.sass"
 const Sidebar = ({currency}) => {
     return ( 
         <Fragment>
-            <div>gdfs</div>
             <h3 className="sidebar__title">Все валюты</h3>
             <ul className="sidebar__list">
                 {

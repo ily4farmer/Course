@@ -125,13 +125,15 @@ class App extends Component {
     });
   }
 
-  getCalc = async() => {
-    const API = await fetch(`https://api.ratesapi.io/api/latest?base=${this.state.selectOne}&symbols=${this.state.selectTwo}`);
-    const date = await API.json();
-    const result = this.state.inputValue * date.rates[this.state.selectTwo].toFixed(2);
-    this.setState({
-      result
-    })
+  getCalc = () => {
+    axios(`https://api.ratesapi.io/api/latest?base=${this.state.selectOne}&symbols=${this.state.selectTwo}`)
+      .then(response => {
+        console.log(response);
+        const result = this.state.inputValue * response.data.rates[this.state.selectTwo].toFixed(2);
+        this.setState({
+          result
+        })
+      })
   }
 
   
@@ -154,7 +156,6 @@ class App extends Component {
     //Кладем в переменную currency весь this.state.currency
     let currency = {...this.state.currency};
     for (let i = 0; i < key.length; i++) {
-      // dsd
       //С помощью цикла в значение курса каждого объекта записываем значения нужных нам курсов
       currency[key[i]].course = date.rates[key[i]].toFixed(2);
 
@@ -174,7 +175,7 @@ class App extends Component {
   render() {
     return ( 
       <HashRouter>
-        <Navigation/>
+            <Navigation/>
             <div className="content">
               <div className="container wrapper">
                 <div className="content-block">

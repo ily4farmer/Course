@@ -7,7 +7,6 @@ const Home = () => {
      const {currency, baseCyrrency, date} = state;
      return ( 
           <div className="home">
-               <div>fdsfdfs</div>
                <div className="home__header">
                     <span>Дата: "{date}"</span>
                     &nbsp;&nbsp;
