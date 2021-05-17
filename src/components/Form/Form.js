@@ -26,8 +26,7 @@ const Form = ({submit}) => {
                     </label>
                 )
                })}
-                    <input className="form__submit" type="submit" value={submit} />
-                    <span className="error">{error}</span>
+                   
         </form>
      );
 }

@@ -23,21 +23,25 @@ class App extends Component {
       //formControls
       formControls: {
         email: {
-          value: '',
-          errorMessage: "Введите корректный email",
-          valid: true,
+          errorMessage: "Введите кореектный email",
+          name: "Email",
           type: "email",
-          name: "Email"
+          touched: true,
+          value: ''
         },
         password: {
-          value: '',
-          errorMessage: "Введите корректный email",
-          valid: false,
+          errorMessage: "Введите кореектный пароль",
+          name: "Password",
+          name: "password",
           type: "password",
-          name: "Пароль"
+          touched: true,
+          value: ''
         }
       },
-      errorModal: true,
+      emailValue: '',
+      passwordValue: '',
+      errorModal: false,
+      //
       baseCyrrency: "USD",
       currency: {
         USD:{name: 'Доллар США', flag: USD, course: ''},
@@ -73,34 +77,62 @@ class App extends Component {
   emailHandler = (e) => {
     //создаем регулярное выражение
     const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    //записываем в переменную value из поля input[email]
-    // const email = e.target.value;
-    //копируем в переменную все значения this.state.formControls для возможности взаимодействия с внутренними значениями
-    let formControls = {...this.state.formControls},
-        form = '';
-    //если value email не соответствует руг. выражению 
-    let email = '',
-        password = '';
-    switch (e.target.type) {
-      case "email":
-        formControls.email.value = e.target.value;
+    
+    // создаем переменные в которые положим value из инпутов форм
+    let emailValue = '',
+        passwordValue = '',
+        formControls = {...this.state.formControls};
+    // Задаем switch для проверки
+    switch (true) {
+      //Если тип инпута равен email то:
+      case (e.target.type === "email"):
+        //заключаем в переменную value
+        emailValue = e.target.value;
+        //если emailValue соответствует регулярному выражению
+        if (regexEmail.test(emailValue)) {
+          formControls.email.touched = true;
+          //задаем значение в state
+          this.setState({ emailValue, formControls: {...formControls} });  
+        } else {
+          formControls.email.touched = false;
+          this.setState({ formControls: {...formControls}, emailValue: '' }); 
+        };
         break;
-      case "password":
-        formControls.password.value = e.target.value;
+      //все идентично выше показанному
+      case (e.target.type === "password"):
+        passwordValue = e.target.value;
+        if (passwordValue.length > 3) {
+          formControls.password.touched = true;
+          this.setState({ passwordValue, formControls: {...formControls} });  
+        } else {
+          formControls.password.touched = false;
+          this.setState({ formControls: {...formControls}, passwordValue: '' }); 
+        };
         break;
     }
 
-    if (regexEmail.test(formControls.email.value) && formControls.password.value.length >= 4) {
-      form = {...formControls};
-      form.error = "";
-      this.setState({
-        formControls: form,
-        errorModal: true
-      });
-    } else {
-      this.setState({ errorModal: false});
-    }
-    
+    // switch (e.target.type) {
+    //   case "email":
+    //     newformControls.email.value = e.target.value;
+    //     break;
+    //   case "password":
+    //     newformControls.password.value = e.target.value;
+    //     break;
+    // }
+
+    // console.log(newformControls);
+
+    // if (regexEmail.test(newformControls.email.value) && newformControls.password.value.length > 3) {
+    //   this.setState({
+    //     formControls: {...newformControls}
+    //   });
+    // } else {
+    //   newformControls.email.touched = false;
+    //   newformControls.password.touched = false;
+    //   this.setState({
+    //     formControls: {...newformControls}
+    //   });
+    // }
   }
 
   //
@@ -258,7 +290,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(Object.keys(this.state.formControls));
     return ( 
       <HashRouter>
             <Navigation modalShow={this.modalShow}/>
