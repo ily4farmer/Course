@@ -14,11 +14,30 @@ import GBP from "./image/GBP.png";
 import JPY from "./image/JPY.png";
 import RUB from "./image/RUB.png";
 import USD from "./image/USD.png";
+import Modal from './components/Modal/Modal';
 
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      //formControls
+      formControls: {
+        email: {
+          value: '',
+          errorMessage: "Введите корректный email",
+          valid: true,
+          type: "email",
+          name: "Email"
+        },
+        password: {
+          value: '',
+          errorMessage: "Введите корректный email",
+          valid: false,
+          type: "password",
+          name: "Пароль"
+        }
+      },
+      errorModal: true,
       baseCyrrency: "USD",
       currency: {
         USD:{name: 'Доллар США', flag: USD, course: ''},
@@ -41,10 +60,50 @@ class App extends Component {
       sample: {
         base: "USD", baseTwo: "RUB", date: '2011-11-11', course: ''
       },
-      sampleList: ''
+      sampleList: '',
+      //
+
+      //Modal
+      modal: true
       //
     }
   }
+
+  //Modal
+  emailHandler = (e) => {
+    //создаем регулярное выражение
+    const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    //записываем в переменную value из поля input[email]
+    // const email = e.target.value;
+    //копируем в переменную все значения this.state.formControls для возможности взаимодействия с внутренними значениями
+    let formControls = {...this.state.formControls},
+        form = '';
+    //если value email не соответствует руг. выражению 
+    let email = '',
+        password = '';
+    switch (e.target.type) {
+      case "email":
+        formControls.email.value = e.target.value;
+        break;
+      case "password":
+        formControls.password.value = e.target.value;
+        break;
+    }
+
+    if (regexEmail.test(formControls.email.value) && formControls.password.value.length >= 4) {
+      form = {...formControls};
+      form.error = "";
+      this.setState({
+        formControls: form,
+        errorModal: true
+      });
+    } else {
+      this.setState({ errorModal: false});
+    }
+    
+  }
+
+  //
   
   //Sample
   getSampleBaseTwo = (e) => {
@@ -67,6 +126,15 @@ class App extends Component {
   }
 
   //Sample
+
+  deleteItem = async(item) => {
+    let sampleList = {...this.state.sampleList};
+    delete sampleList[item];
+    this.setState({sampleList});
+
+    await axios.delete(`https://course-b2a3e-default-rtdb.firebaseio.com/sample/${item}.json`)
+  }
+
   getDataSample = async() => {
     await axios(`https://api.ratesapi.io/api/${this.state.sample.date}?base=${this.state.sample.base}&symbols=${this.state.sample.baseTwo}`)
       .then(response => 
@@ -88,6 +156,15 @@ class App extends Component {
         })
   }
 
+  getSample = () => {
+    axios(`https://course-b2a3e-default-rtdb.firebaseio.com/sample.json`)
+        .then(response => {
+          const data = response.data;
+          this.setState({ 
+            sampleList: {...data} 
+          });
+        })
+  }
 
   //Calc
 
@@ -168,14 +245,23 @@ class App extends Component {
     });
   }
 
+  // Modal
+  modalShow = () => {
+    this.setState(prevState => ({
+      modal: !prevState.modal
+    }))
+  }
+
   componentDidMount() {
     this.getCourse("USD");
+    this.getSample();
   }
 
   render() {
+    console.log(Object.keys(this.state.formControls));
     return ( 
       <HashRouter>
-            <Navigation/>
+            <Navigation modalShow={this.modalShow}/>
             <div className="content">
               <div className="container wrapper">
                 <div className="content-block">
@@ -191,9 +277,13 @@ class App extends Component {
                       getSampleBase: this.getSampleBase,
                       getSampleBaseTwo: this.getSampleBaseTwo,
                       getSampleDate: this.getSampleDate,
-                      getDataSample: this.getDataSample
+                      getDataSample: this.getDataSample,
+                      deleteItem: this.deleteItem, 
+                      modalShow: this.modalShow,
+                      emailHandler: this.emailHandler
                       }}> 
                       <Layout/>
+                      <Modal modal={this.state.modal} hide={this.modalShow}/>
                     </Context.Provider>
                   </div>
                   <div className="sidebar wrapper">

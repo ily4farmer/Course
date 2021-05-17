@@ -3,7 +3,8 @@ import "./Navigation.sass"
 import { NavLink } from 'react-router-dom';
 
 
-const Navigation = () => {
+const Navigation = ({modalShow}) => {
+    
     return ( 
         <header className="header">
             <div className="container wrapper">
@@ -27,7 +28,7 @@ const Navigation = () => {
                             </li>
                         </ul>
                     </nav>
-                    <div className="register">
+                    <div className="register" onClick={modalShow}>
                         <NavLink to="#" className="register__link">Войти</NavLink>
                     </div>
                 </div>

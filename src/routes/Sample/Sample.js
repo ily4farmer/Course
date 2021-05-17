@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Context } from '../../components/Context/Context';
 
 const Sample = () => {
-    const {state, currencyMap, getDataSample, getSampleDate, getSampleBase, getSampleBaseTwo} = useContext(Context);
+    const {deleteItem, state, currencyMap, getDataSample, getSampleDate, getSampleBase, getSampleBaseTwo} = useContext(Context);
     return ( <div>
         <div className="sample">
                <select value={state.sample.base} onChange={getSampleBase}>
@@ -27,6 +27,7 @@ const Sample = () => {
                                     <span>{state.sampleList[item].baseTwo}</span>
                                     &ensp;
                                     <br />
+                                    <button onClick={(e) => deleteItem(item)}>X</button>
                                 </div>
                             )
                         })
