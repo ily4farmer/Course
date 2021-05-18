@@ -23,23 +23,20 @@ class App extends Component {
       //formControls
       formControls: {
         email: {
-          errorMessage: "Введите кореектный email",
+          errorMessage: "Введите коректный email",
           name: "Email",
           type: "email",
-          touched: true,
+          valid: true,
           value: ''
         },
         password: {
-          errorMessage: "Введите кореектный пароль",
+          errorMessage: "Введите коректный пароль",
           name: "Password",
-          name: "password",
           type: "password",
-          touched: true,
+          valid: true,
           value: ''
         }
       },
-      emailValue: '',
-      passwordValue: '',
       errorModal: false,
       //
       baseCyrrency: "USD",
@@ -72,9 +69,55 @@ class App extends Component {
       //
     }
   }
+  //Регистрация и авторизация
+  //
+  //
+  //
+  // 
+  // 
+  //  КОГДА УВИШЬ ЭТОТ КОД ОБЯЗАТЕЛЬНО ПОСТАРАЙСЯ ИЗБАВИТЬСЯ ОТ e.preventDefault(); в этих методах
+  // И НАПИШИ МЕТОД ДО КОНЦА, СМОТРИ КОД С КУРСА, ЧТОБЫ ВСЕ ПРОВЕРИТЬ И дописатьНАПИСАТЬ
+  // 
+  // 
+  // 
+  // 
+  // 
+  loginHeandler = async(e) => {
+    e.preventDefault();
+
+    const userData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true
+    }
+    try {
+      await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+      AIzaSyAZn3BPC2Hrb2RGY40wVCqWkQ_8cmRpKN0`, userData) 
+        .then(response => console.log(response))
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  registerHeandler = async(e) => {
+    e.preventDefault();
+
+    const userData = {
+      email: this.state.formControls.email.value,
+      password: this.state.formControls.password.value,
+      returnSecureToken: true
+    }
+    try {
+      await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=
+      AIzaSyAZn3BPC2Hrb2RGY40wVCqWkQ_8cmRpKN0`, userData) 
+        .then(response => console.log(response))
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   //Modal
-  emailHandler = (e) => {
+  formValidation = (e) => {
     //создаем регулярное выражение
     const regexEmail = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     
@@ -90,49 +133,30 @@ class App extends Component {
         emailValue = e.target.value;
         //если emailValue соответствует регулярному выражению
         if (regexEmail.test(emailValue)) {
-          formControls.email.touched = true;
+          formControls.email.valid = true;
+          formControls.email.value = emailValue;
           //задаем значение в state
-          this.setState({ emailValue, formControls: {...formControls} });  
+          this.setState({ formControls: {...formControls} });  
         } else {
-          formControls.email.touched = false;
-          this.setState({ formControls: {...formControls}, emailValue: '' }); 
+          formControls.email.value = '';
+          formControls.email.valid = false;
+          this.setState({ formControls: {...formControls}}); 
         };
         break;
       //все идентично выше показанному
       case (e.target.type === "password"):
         passwordValue = e.target.value;
         if (passwordValue.length > 3) {
-          formControls.password.touched = true;
-          this.setState({ passwordValue, formControls: {...formControls} });  
+          formControls.password.valid = true;
+          formControls.password.value = passwordValue;
+          this.setState({ formControls: {...formControls} });  
         } else {
-          formControls.password.touched = false;
-          this.setState({ formControls: {...formControls}, passwordValue: '' }); 
+          formControls.password.value = '';
+          formControls.password.valid = false;
+          this.setState({ formControls: {...formControls}}); 
         };
         break;
     }
-
-    // switch (e.target.type) {
-    //   case "email":
-    //     newformControls.email.value = e.target.value;
-    //     break;
-    //   case "password":
-    //     newformControls.password.value = e.target.value;
-    //     break;
-    // }
-
-    // console.log(newformControls);
-
-    // if (regexEmail.test(newformControls.email.value) && newformControls.password.value.length > 3) {
-    //   this.setState({
-    //     formControls: {...newformControls}
-    //   });
-    // } else {
-    //   newformControls.email.touched = false;
-    //   newformControls.password.touched = false;
-    //   this.setState({
-    //     formControls: {...newformControls}
-    //   });
-    // }
   }
 
   //
@@ -257,8 +281,8 @@ class App extends Component {
   } 
 
   //Получение валюты 
-  getCourse = async(base) => {
-    const api = await fetch(`https://api.ratesapi.io/api/latest?base=${base}`);
+  getCourse = async() => {
+    const api = await fetch(`https://api.ratesapi.io/api/latest?base=${this.state.baseCyrrency}`);
     const date = await api.json();
     //Заключаем ключи объекта currency в key
     const key = Object.keys(this.state.currency);
@@ -285,7 +309,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getCourse("USD");
+    this.getCourse();
     this.getSample();
   }
 
@@ -311,7 +335,9 @@ class App extends Component {
                       getDataSample: this.getDataSample,
                       deleteItem: this.deleteItem, 
                       modalShow: this.modalShow,
-                      emailHandler: this.emailHandler
+                      formValidation: this.formValidation,
+                      registerHeandler: this.registerHeandler,
+                      loginHeandler: this.loginHeandler
                       }}> 
                       <Layout/>
                       <Modal modal={this.state.modal} hide={this.modalShow}/>

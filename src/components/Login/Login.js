@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react';
 import Form from '../Form/Form';
 
-const Login = () => {
+const Login = ({loginHeandler}) => {
     return ( 
         <Fragment>
             <h2>Логин</h2>
-            <Form submit="Войти"/>
+            <Form methodForm={loginHeandler} submit="Войти"/>
         </Fragment>
     );
 }
