@@ -6,7 +6,7 @@ const Form = ({submit, methodForm}) => {
     const {formValidation, state} = useContext(Context);
     return ( 
         <Fragment>
-        <form className="form">
+        <form className="form" onSubmit={methodForm}>
             {   Object.keys(state.formControls).map((item) => {
                 const i = state.formControls[item];
                 return (
@@ -17,7 +17,7 @@ const Form = ({submit, methodForm}) => {
                     </label>
                 )
                })}
-                   <input type="submit" onClick={e => methodForm(e)} value={submit}/>
+                   <input type="submit" value={submit}/>
         </form>
         
         </Fragment>

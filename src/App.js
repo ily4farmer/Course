@@ -20,6 +20,8 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
+      auth: false,
+      error: '',
       //formControls
       formControls: {
         email: {
@@ -91,9 +93,15 @@ class App extends Component {
       returnSecureToken: true
     }
     try {
-      await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
+      const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
       AIzaSyAZn3BPC2Hrb2RGY40wVCqWkQ_8cmRpKN0`, userData) 
-        .then(response => console.log(response))
+      console.log(response);
+      if (response.data.idToken) {
+        this.setState({
+          auth: true,
+          modal: true
+        })
+      }
     } catch (e) {
       console.log(e);
     }
@@ -281,8 +289,8 @@ class App extends Component {
   } 
 
   //Получение валюты 
-  getCourse = async() => {
-    const api = await fetch(`https://api.ratesapi.io/api/latest?base=${this.state.baseCyrrency}`);
+  getCourse = async(a) => {
+    const api = await fetch(`https://api.ratesapi.io/api/latest?base=${a}`);
     const date = await api.json();
     //Заключаем ключи объекта currency в key
     const key = Object.keys(this.state.currency);
@@ -309,7 +317,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getCourse();
+    this.getCourse("USD");
     this.getSample();
   }
 
