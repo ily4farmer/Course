@@ -29,16 +29,19 @@ class App extends Component {
           name: "Email",
           type: "email",
           valid: true,
-          value: ''
+          value: '', 
+          val: ''
         },
         password: {
           errorMessage: "Введите коректный пароль",
           name: "Password",
           type: "password",
           valid: true,
-          value: ''
+          value: '',
+          val: ''
         }
       },
+      valid: '',
       errorModal: false,
       //
       baseCyrrency: "USD",
@@ -71,19 +74,7 @@ class App extends Component {
       //
     }
   }
-  //Регистрация и авторизация
-  //
-  //
-  //
-  // 
-  // 
-  //  КОГДА УВИШЬ ЭТОТ КОД ОБЯЗАТЕЛЬНО ПОСТАРАЙСЯ ИЗБАВИТЬСЯ ОТ e.preventDefault(); в этих методах
-  // И НАПИШИ МЕТОД ДО КОНЦА, СМОТРИ КОД С КУРСА, ЧТОБЫ ВСЕ ПРОВЕРИТЬ И дописатьНАПИСАТЬ
-  // 
-  // 
-  // 
-  // 
-  // 
+ 
   loginHeandler = async(e) => {
     e.preventDefault();
 
@@ -96,11 +87,15 @@ class App extends Component {
       const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=
       AIzaSyAZn3BPC2Hrb2RGY40wVCqWkQ_8cmRpKN0`, userData) 
       console.log(response);
+      let formControls = {...this.state.formControls};
+      formControls.email.val = "";
+      formControls.password.val = "";
       if (response.data.idToken) {
         this.setState({
           auth: true,
-          modal: true
-        })
+          modal: true,
+          formControls
+        });
       }
     } catch (e) {
       console.log(e);
@@ -116,9 +111,18 @@ class App extends Component {
       returnSecureToken: true
     }
     try {
-      await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=
+      const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=
       AIzaSyAZn3BPC2Hrb2RGY40wVCqWkQ_8cmRpKN0`, userData) 
-        .then(response => console.log(response))
+      let formControls = {...this.state.formControls};
+      formControls.email.val = "";
+      formControls.password.val = "";
+      if (response.data.idToken) {
+        this.setState({
+          auth: true,
+          modal: true,
+          formControls
+        });
+      }
     } catch (e) {
       console.log(e);
     }
@@ -139,6 +143,8 @@ class App extends Component {
       case (e.target.type === "email"):
         //заключаем в переменную value
         emailValue = e.target.value;
+        formControls.email.val = e.target.value
+        this.setState({formControls})
         //если emailValue соответствует регулярному выражению
         if (regexEmail.test(emailValue)) {
           formControls.email.valid = true;
@@ -154,6 +160,8 @@ class App extends Component {
       //все идентично выше показанному
       case (e.target.type === "password"):
         passwordValue = e.target.value;
+        formControls.password.val = e.target.value
+        this.setState({formControls})
         if (passwordValue.length > 3) {
           formControls.password.valid = true;
           formControls.password.value = passwordValue;
@@ -313,7 +321,7 @@ class App extends Component {
   modalShow = () => {
     this.setState(prevState => ({
       modal: !prevState.modal
-    }))
+    }));
   }
 
   componentDidMount() {
@@ -324,39 +332,28 @@ class App extends Component {
   render() {
     return ( 
       <HashRouter>
-            <Navigation modalShow={this.modalShow}/>
-            <div className="content">
-              <div className="container wrapper">
-                <div className="content-block">
-                  <div className="content__wrapper wrapper">
-                    <Context.Provider value={{
-                      state: this.state,
-                      baseCyrrencyHandler: this.baseCyrrencyHandler,
-                      selectOne: this.calcSelectOne,
-                      selectTwo: this.calcSelectTwo,
-                      inputValue: this.inputValue,
-                      getCalc: this.getCalc,
-                      currencyMap: this.currencyMap,
-                      getSampleBase: this.getSampleBase,
-                      getSampleBaseTwo: this.getSampleBaseTwo,
-                      getSampleDate: this.getSampleDate,
-                      getDataSample: this.getDataSample,
-                      deleteItem: this.deleteItem, 
-                      modalShow: this.modalShow,
-                      formValidation: this.formValidation,
-                      registerHeandler: this.registerHeandler,
-                      loginHeandler: this.loginHeandler
-                      }}> 
-                      <Layout/>
-                      <Modal modal={this.state.modal} hide={this.modalShow}/>
-                    </Context.Provider>
-                  </div>
-                  <div className="sidebar wrapper">
-                    <Sidebar currency={this.state.currency}/>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* <Navigation modalShow={this.modalShow}/> */}
+                <Context.Provider value={{
+                  state: this.state,
+                  baseCyrrencyHandler: this.baseCyrrencyHandler,
+                  selectOne: this.calcSelectOne,
+                  selectTwo: this.calcSelectTwo,
+                  inputValue: this.inputValue,
+                  getCalc: this.getCalc,
+                  currencyMap: this.currencyMap,
+                  getSampleBase: this.getSampleBase,
+                  getSampleBaseTwo: this.getSampleBaseTwo,
+                  getSampleDate: this.getSampleDate,
+                  getDataSample: this.getDataSample,
+                  deleteItem: this.deleteItem, 
+                  modalShow: this.modalShow,
+                  formValidation: this.formValidation,
+                  registerHeandler: this.registerHeandler,
+                  loginHeandler: this.loginHeandler
+                }}> 
+                  <Layout/>
+                  <Modal modal={this.state.modal} hide={this.modalShow}/>
+                </Context.Provider>
       </HashRouter>
      );
   }

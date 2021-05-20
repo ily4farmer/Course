@@ -6,23 +6,22 @@ const Home = () => {
      const {state, baseCyrrencyHandler} = useContext(Context);
      const {currency, baseCyrrency, date} = state;
      return ( 
-          <div className="home">
-               <div className="home__header">
-                    <span>Дата: "{date}"</span>
-                    &nbsp;&nbsp;
-                    <span>
-                         Базовая валюта:&nbsp;
-                         <select value={state.baseCyrrency} onChange={baseCyrrencyHandler}>
-                         {Object.keys(currency).map((item, index) => {
-                                   return (
-                                        <option key={index }value={item}>{item}</option>
-                                   )})
-                         }
-                         </select>
-                    </span>
-               </div>
-               <div className="home__content">
-                    <div className="home__wrapper wrapper">
+          <section className="home">
+                    <div className="home__header">
+                         <span>Дата: "{date}"</span>
+                         &nbsp;&nbsp;
+                         <span>
+                              Базовая валюта:&nbsp;
+                              <select value={state.baseCyrrency} onChange={baseCyrrencyHandler}>
+                              {Object.keys(currency).map((item, index) => {
+                                        return (
+                                             <option key={index }value={item}>{item}</option>
+                                        )})
+                              }
+                              </select>
+                         </span>
+                    </div>
+                    <div className="home__content">
                          <ul className="home__list">
                               {
                                    Object.keys(currency).map((item, index) => {
@@ -35,7 +34,7 @@ const Home = () => {
                                              {`1 ${baseCyrrency} = `}
                                              &nbsp;
                                              <img src={currency[item].flag} alt="item" className="home__img"/>
-                                             &nbsp;
+                                             &nbsp;&nbsp;
                                              {`${item} - ${currency[item].course}`} 
                                              </span>
                                         </li>
@@ -43,9 +42,9 @@ const Home = () => {
                                    })
                               }
                          </ul>
+                         
                     </div>
-               </div>
-          </div>
+          </section>
      );
 }
  

@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import "./SideBar.sass"
 
 
 const Sidebar = ({currency}) => {
     return ( 
-        <Fragment>
+        <div className="sidebar wrapper">
             <h3 className="sidebar__title">Все валюты</h3>
             <ul className="sidebar__list">
                 {
@@ -23,8 +23,7 @@ const Sidebar = ({currency}) => {
                     })
                 }
             </ul>
-        </Fragment>
-
+        </div>
      );
 }
  

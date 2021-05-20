@@ -33,7 +33,7 @@ const Calc = () => {
           <span>{ state.result === null ? null 
           : `${state.inputValue} ${state.selectOne} = ${state.result} ${state.selectTwo}`}
           </span>
-    </div> );
+        </div> );
 }
  
 export default Calc;

@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import "./Navigation.sass"
 import { NavLink } from 'react-router-dom';
 
 
-const Navigation = ({modalShow}) => {
+const Navigation = ({state, modalShow}) => {
     
     return ( 
         <header className="header">
@@ -14,18 +14,27 @@ const Navigation = ({modalShow}) => {
                     </div>
                     <nav className="nav">
                         <ul className="nav__list">
-                            <li className="nav__item">
-                                <NavLink to="/" className="nav__link">Главная</NavLink>
-                            </li>
-                            <li className="nav__item">
-                                <NavLink to="/calc" className="nav__link">Калькулятор</NavLink>
-                            </li>
-                            <li className="nav__item">
-                                <NavLink to="/sample" className="nav__link">Образец</NavLink>
-                            </li>
-                            <li className="nav__item">
-                                <NavLink to="/info" className="nav__link">Информация</NavLink>
-                            </li>
+                        {
+                            !state.auth ?
+                                <li className="nav__item">
+                                    <NavLink to="/" className="nav__link">Главная</NavLink>
+                                </li>
+                            :
+                            <Fragment>
+                                <li className="nav__item">
+                                    <NavLink to="/" className="nav__link">Главная</NavLink>
+                                </li>
+                                <li className="nav__item">
+                                    <NavLink to="/calc" className="nav__link">Калькулятор</NavLink>
+                                </li>
+                                <li className="nav__item">
+                                    <NavLink to="/sample" className="nav__link">Образец</NavLink>
+                                </li>
+                                <li className="nav__item">
+                                    <NavLink to="/info" className="nav__link">Информация</NavLink>
+                                </li>
+                            </Fragment>
+                        }
                         </ul>
                     </nav>
                     <div className="register" onClick={modalShow}>

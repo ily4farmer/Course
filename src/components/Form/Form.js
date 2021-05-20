@@ -1,9 +1,12 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Fragment } from 'react';
 import { Context } from '../Context/Context';
 
 const Form = ({submit, methodForm}) => {
     const {formValidation, state} = useContext(Context);
+    if (state.auth) {
+        
+    }
     return ( 
         <Fragment>
         <form className="form" onSubmit={methodForm}>
@@ -12,12 +15,12 @@ const Form = ({submit, methodForm}) => {
                 return (
                     <label key={item} className="form__label">
                         <p>{i.name}</p>
-                        <input name={i.type} onChange={e => formValidation(e)} type={i.type} />
+                        <input value={i.val} className="form__input" name={i.type} onChange={e => formValidation(e)} type={i.type} />
                         <span style={i.valid ? {display: 'none'} : {display: 'block', color: "red"}}>{i.errorMessage}</span>
                     </label>
                 )
                })}
-                   <input type="submit" value={submit}/>
+                   <input className="form__submit" type="submit" value={submit}/>
         </form>
         
         </Fragment>
